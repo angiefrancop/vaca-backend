@@ -1,0 +1,18 @@
+{
+  "name": "vaca-backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "dev": "nodemon src/app.js"
+  },
+  "author": "Angela",
+  "type": "module",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.19.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.0"
+  }
+}
