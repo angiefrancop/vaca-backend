@@ -11,12 +11,23 @@ const groupsController = {
   },
   getGroups: (req, res) => {
     const groups = groupsService.getGroups();
+    console.info(groups);
     res.json(groups);
   },
   createGroup: (req, res) => {
     const group = req.body;
     if (!group.name) {
       return res.status(400).json({ error: 'Name is required' });
+    }
+
+    const groupExists = groupsService.getGroups().find((actualGroup) => actualGroup.name === group.name.toLowerCase());
+
+    if (groupExists) {
+      return res.status(400).json({ error: 'Group already exists' });
+    }
+
+    if (group.name.length > 30) {
+      return res.status(400).json({ error: 'the name exceeds the 30 characters allowed' });
     }
 
     if (!group.color) {
@@ -42,8 +53,8 @@ const groupsController = {
       return res.status(400).json({ error: 'Color cannot be empty' });
     }
 
-    const groups = groupsService.updateGroup(id, group);
-    res.json(groups);
+    const groupUpdated = groupsService.updateGroup(id, group);
+    res.json(groupUpdated);
   },
 
   deleteGroup: (req, res) => {
