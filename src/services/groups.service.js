@@ -1,30 +1,38 @@
-let groups = [];
+import { Model } from '../lib/model.js';
 
-const groupsService = {
-  getGroupById: (id) => {
-    return groups.find((group) => group.id === id);
-  },
-  getGroups: () => {
-    return groups;
-  },
-  createGroup: (group) => {
-    let maxId = groups.reduce((max, item) => Math.max(max, item.id), 0);
-    group.id = maxId + 1;
+const GroupService = () => {
+  const groupModel = Model();
+  const getGroupById = (id) => {
+    return groupModel.findUnique(id);
+  };
+
+  const getGroups = () => {
+    return groupModel.findMany();
+  };
+
+  const createGroup = (group) => {
     group.name = group.name.toLowerCase();
     group.date = new Date();
-    groups.push(group);
-    return groups;
-  },
-  updateGroup: (id, group) => {
-    const index = groups.findIndex((group) => group.id === id);
+    return groupModel.create(group);
+  };
+
+  const updateGroup = (id, group) => {
     group.id = id;
-    groups[index] = group;
-    return group;
-  },
-  deleteGroup: (id) => {
-    groups = groups.filter((group) => group.id !== id);
-    return groups;
-  }
+    return groupModel.update(group.id, group);
+  };
+
+  const deleteGroup = (id) => {
+    groupModel.delete(id);
+    return groupModel.findMany();
+  };
+
+  return {
+    getGroupById,
+    getGroups,
+    createGroup,
+    updateGroup,
+    deleteGroup
+  };
 };
 
-export default groupsService;
+export { GroupService };
