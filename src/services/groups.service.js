@@ -1,19 +1,20 @@
 import { Model } from '../lib/model.js';
+import Repository from '../repositories/groups.repository.js';
 
-const GroupService = () => {
-  const groupModel = Model();
-  const getGroupById = (id) => {
-    return groupModel.findUnique(id);
+const GroupService = (dbClient) => {
+  const repository = Repository(dbClient);
+
+  const getGroupById = async (id) => {
+    return await repository.getGroupById(id);
   };
 
-  const getGroups = () => {
-    return groupModel.findMany();
+  const getGroups = async () => {
+    return await repository.getGroups();
   };
 
-  const createGroup = (group) => {
+  const createGroup = async (group) => {
     group.name = group.name.toLowerCase();
-    group.date = new Date();
-    return groupModel.create(group);
+    return await repository.createGroup(group);
   };
 
   const updateGroup = (id, group) => {
@@ -35,4 +36,4 @@ const GroupService = () => {
   };
 };
 
-export { GroupService };
+export default GroupService;

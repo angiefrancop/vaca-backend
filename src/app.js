@@ -1,6 +1,7 @@
+import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
-import routerGroups from './router/groups.router.js';
+import mainRouter from './router/async.router.js';
 
 const app = express();
 const corsOptions = {
@@ -9,8 +10,7 @@ const corsOptions = {
 const PORT = process.env.PORT || 3001;
 app.use(cors(corsOptions));
 app.use(express.json());
-
-app.use('/api/groups', routerGroups);
+app.use(mainRouter());
 
 app.listen(PORT, () => {
   console.info(`Express server running on port http://localhost:${PORT} 🚀`);

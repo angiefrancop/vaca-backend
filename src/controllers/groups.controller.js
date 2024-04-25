@@ -1,23 +1,22 @@
-import { GroupService } from '../services/groups.service.js';
+import GroupService from '../services/groups.service.js';
 
 const GroupController = () => {
-  const groupService = GroupService();
-
-  const getGroupById = (req, res) => {
-    const id = req.params.id;
-    if (isNaN(id)) {
-      return res.status(400).json({ error: 'ID must be a number' });
+  const getGroupById = async (req, res) => {
+    const groupService = GroupService(req.dbClient);
+    const group = await groupService.getGroupById(req.params.id);
+    if (!group) {
+      res.status(404).json({ error: 'Group not found' });
+    } else {
+      res.status(200).json(group);
     }
-    const group = groupService.getGroupById(id);
-    res.json(group);
   };
 
-  const getGroups = (req, res) => {
-    const groups = groupService.getGroups();
-    console.info(groups);
-    res.json(groups);
+  const getGroups = async (req, res) => {
+    const groupService = GroupService(req.dbClient);
+    const groups = await groupService.getGroups();
+    res.status(200).json(groups);
   };
-  const createGroup = (req, res) => {
+  const createGroup = async (req, res) => {
     const group = req.body;
     if (!group.name) {
       return res.status(400).json({ error: 'Name is required' });
@@ -42,7 +41,7 @@ const GroupController = () => {
     res.json(groupService.getGroups());
   };
 
-  const updateGroup = (req, res) => {
+  const updateGroup = async (req, res) => {
     const id = Number(req.params.id);
     const group = req.body;
 
@@ -57,7 +56,7 @@ const GroupController = () => {
     res.json(groupService.updateGroup(id, group));
   };
 
-  const deleteGroup = (req, res) => {
+  const deleteGroup = async (req, res) => {
     const id = req.params.id;
     const groups = groupService.deleteGroup(id);
     res.json(groups);
@@ -72,4 +71,4 @@ const GroupController = () => {
   };
 };
 
-export { GroupController };
+export default GroupController;
