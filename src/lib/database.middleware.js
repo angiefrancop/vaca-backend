@@ -1,7 +1,6 @@
 import pg from 'pg';
 const { Pool } = pg;
 const pool = new Pool({
-  // same as
   user: process.env.PGUSER,
   host: process.env.PGHOST,
   database: process.env.PGDATABASE,
@@ -11,11 +10,11 @@ const pool = new Pool({
 
 const requireTransactionMap = {
   POST: true,
-  PUT: true
+  PUT: true,
+  DELETE: true
 };
 
 const connectDatabase = async (req, res, next) => {
-  console.info('connecting to database');
   let dbClient = null;
   try {
     dbClient = await pool.connect();

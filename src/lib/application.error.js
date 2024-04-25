@@ -1,7 +1,7 @@
 function createApplicationError(msg, errorCode, cause) {
-  const error = Error(msg, cause);
-  error.errorCode = errorCode;
+  const error = Error(msg, { cause });
   error.isApplicationError = true;
+  error.errorCode = errorCode;
   return error;
 }
 
