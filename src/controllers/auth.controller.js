@@ -1,19 +1,12 @@
+import AuthService from '../services/auth.service.js';
 import UsersService from '../services/users.service.js';
-import jwt from 'jsonwebtoken';
-import bcrypt from 'bcrypt';
 
 const AuthController = () => {
   const login = async (req, res) => {
-    console.info('AuthController.login');
-    const usersService = UsersService(req.dbClient);
+    const authService = AuthService(req.dbClient);
     const { email, password } = req.body;
-    const user = await usersService.getUserByEmail(email);
-    if (!user || !(await bcrypt.compare(password, user.password))) {
-      return res.status(401).json({ message: 'Invalid credentials' });
-    }
+    const token = await authService.login(email, password);
 
-    const payload = { id: user.id };
-    const token = jwt.sign(payload, process.env.JWT_SECRET);
     res.json({ token });
   };
 

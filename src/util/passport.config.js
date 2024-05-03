@@ -1,4 +1,5 @@
 import passport from 'passport';
+import pool from '../lib/db.pool.js';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import Repository from '../repositories/users.repository.js';
 
@@ -8,15 +9,22 @@ const options = {
 };
 
 passport.use(
-  new Strategy(options, function (jwt_payload, done) {
+  new Strategy(options, async function (jwt_payload, done) {
+    let dbCliente;
     try {
-      const user = Repository().getUserById(jwt_payload.sub);
+      dbCliente = await pool.connect();
+      const user = await Repository(dbCliente).getUserById(jwt_payload.id);
+      console.info('jwt_payload.sub', jwt_payload);
+      console.info('user', user);
       if (user) {
         return done(null, user);
       } else {
         return done(null, false);
       }
     } catch (e) {
+      if (dbCliente) {
+        dbCliente.release();
+      }
       return done(e);
     }
   })

@@ -1,8 +1,8 @@
 import Repository from '../repositories/groups.repository.js';
 import AppError from '../lib/application.error.js';
 
-const GroupService = (dbClient) => {
-  const repository = Repository(dbClient);
+const GroupService = (userId, dbClient) => {
+  const repository = Repository(userId, dbClient);
 
   const getGroupById = async (id) => {
     return await repository.getGroupById(id);

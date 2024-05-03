@@ -1,9 +1,9 @@
 import bcrypt from 'bcrypt';
 
-const GET_ALL = `SELECT id, name, email, password, created_at FROM users`;
+const GET_ALL = `SELECT id, name, email, created_at , password FROM users`;
 const GET_BY_ID = `${GET_ALL} WHERE id = $1`;
 const GET_BY_EMAIL = `${GET_ALL} WHERE email = $1`;
-const CREATE = `INSERT INTO users (name, email, password, created_at) VALUES ($1, $2, $3, NOW()) RETURNING id, name`;
+const CREATE = `INSERT INTO users (name, email, password, created_at) VALUES ($1, $2, $3, NOW()) RETURNING id, name, email, created_at`;
 const DELETE_BY_ID = `DELETE FROM users WHERE id = $1`;
 const FULL_UPDATE_BY_ID = `
     UPDATE users
@@ -12,6 +12,9 @@ const FULL_UPDATE_BY_ID = `
 `;
 
 const Repository = (dbClient) => {
+  if (!dbClient) {
+    throw new Error('Required dbClient');
+  }
   const getUsers = async () => {
     const { rows } = await dbClient.query(GET_ALL);
     return rows;

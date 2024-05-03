@@ -1,40 +1,24 @@
 import Repository from '../repositories/users.repository.js';
 import AppError from '../lib/application.error.js';
+import jwt from 'jsonwebtoken';
+import bcrypt from 'bcrypt';
 
 const UsersService = (dbClient) => {
   const repository = Repository(dbClient);
 
-  const getUserById = async (id) => {
-    return await repository.getUserById(id);
-  };
-
-  const getUsers = async () => {
-    return await repository.getUsers();
-  };
-
-  const createUser = async (user) => {
-    return await repository.createUser(user);
-  };
-
-  const updateUser = async (user) => {
-    const existingUser = await repository.getUserById(user.id);
-    if (!existingUser) {
-      throw AppError('User to update does not exist', 404);
+  const login = async (email, password) => {
+    const user = await repository.getUserByEmail(email);
+    console.info(user, email, password);
+    if (!user || !(await bcrypt.compare(password, user.password))) {
+      throw AppError('Invalid credentials', 401);
     }
 
-    return await repository.updateById(user);
-  };
-
-  const deleteUser = async (id) => {
-    return await repository.deleteUser(id);
+    const payload = { id: user.id };
+    return jwt.sign(payload, process.env.JWT_SECRET);
   };
 
   return {
-    getUserById,
-    getUsers,
-    createUser,
-    updateUser,
-    deleteUser
+    login
   };
 };
 

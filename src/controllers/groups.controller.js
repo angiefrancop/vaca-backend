@@ -2,8 +2,8 @@ import GroupService from '../services/groups.service.js';
 
 const GroupController = () => {
   const getGroupById = async (req, res) => {
-    const groupService = GroupService(req.dbClient);
-    const group = await groupService.getGroupById(req.params.id);
+    const groupService = GroupService(req.user?.id, req.dbClient);
+    const group = await groupService.getGroupById();
     if (!group) {
       res.status(404).json({ error: 'Group not found' });
     } else {
@@ -12,19 +12,19 @@ const GroupController = () => {
   };
 
   const getGroups = async (req, res) => {
-    const groupService = GroupService(req.dbClient);
+    const groupService = GroupService(req.user?.id, req.dbClient);
     const groups = await groupService.getGroups();
     res.status(200).json(groups);
   };
   const createGroup = async (req, res) => {
-    const groupService = GroupService(req.dbClient);
+    const groupService = GroupService(req.user?.id, req.dbClient);
     const group = req.body;
     const createdGroup = await groupService.createGroup(group);
     res.status(201).json(createdGroup);
   };
 
   const updateGroup = async (req, res) => {
-    const groupService = GroupService(req.dbClient);
+    const groupService = GroupService(req.user?.id, req.dbClient);
     const id = req.params.id;
     const group = {
       ...req.body,
@@ -48,7 +48,7 @@ const GroupController = () => {
   };
 
   const deleteGroup = async (req, res) => {
-    const groupService = GroupService(req.dbClient);
+    const groupService = GroupService(req.user?.id, req.dbClient);
     const deleted = await groupService.deleteGroup(req.params.id);
     if (deleted) {
       res.status(200).end();
