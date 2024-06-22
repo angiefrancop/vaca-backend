@@ -38,10 +38,14 @@ const rollbackDatabase = async (err, req, res, next) => {
   if (req.doTransaction && req.dbClient) {
     console.info('rollback transaction!');
     await req.dbClient.query('ROLLBACK');
-    req.dbClient.release();
-    req.dbClient = undefined;
-    req.doTransaction = undefined;
   }
+
+  if (req.dbClient) {
+    req.dbClient.release();
+  }
+
+  req.dbClient = undefined;
+  req.doTransaction = undefined;
   console.info('--- ERROR ---');
   console.error(err);
   // need a way to detect app error from system error

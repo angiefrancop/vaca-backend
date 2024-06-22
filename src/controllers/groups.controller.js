@@ -3,7 +3,7 @@ import GroupService from '../services/groups.service.js';
 const GroupController = () => {
   const getGroupById = async (req, res) => {
     const groupService = GroupService(req.user?.id, req.dbClient);
-    const group = await groupService.getGroupById();
+    const group = await groupService.getGroupById(req.params.id);
     if (!group) {
       res.status(404).json({ error: 'Group not found' });
     } else {
@@ -51,7 +51,7 @@ const GroupController = () => {
     const groupService = GroupService(req.user?.id, req.dbClient);
     const deleted = await groupService.deleteGroup(req.params.id);
     if (deleted) {
-      res.status(200).end();
+      res.status(200).json({ message: 'Group deleted' });
     } else {
       res.status(404).end();
     }

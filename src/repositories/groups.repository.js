@@ -1,4 +1,4 @@
-const GET_ALL = `SELECT id, name, color, created_at FROM groups WHERE owner_user_id = $1`;
+const GET_ALL = `SELECT id, name, color, owner_user_id, created_at FROM groups WHERE owner_user_id = $1`;
 const GET_BY_ID = `${GET_ALL} AND id = $2`;
 const CREATE = `INSERT INTO groups (owner_user_id, name, color, created_at) VALUES ($1, $2, $3, NOW()) RETURNING id, name, color`;
 const COUNT_BY_NAME = `SELECT COUNT(*) as count FROM groups WHERE name = $1`;
@@ -22,6 +22,7 @@ const Repository = (userId, dbClient) => {
   };
 
   const getGroupById = async (id) => {
+    console.info('userId', userId);
     const { rows } = await dbClient.query(GET_BY_ID, [userId, id]);
     return rows[0];
   };

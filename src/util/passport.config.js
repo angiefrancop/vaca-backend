@@ -22,10 +22,11 @@ passport.use(
         return done(null, false);
       }
     } catch (e) {
+      return done(e);
+    } finally {
       if (dbCliente) {
         dbCliente.release();
       }
-      return done(e);
     }
   })
 );
